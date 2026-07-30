@@ -1,0 +1,6 @@
+{
+  "name": "Memory Gift Platform",
+  "description": "Premium Digital Memory Gift Platform with QR Codes, Storytelling Templates, and Admin Dashboard.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
