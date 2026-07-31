@@ -1284,7 +1284,20 @@ export const MemoryBuilderWizard: React.FC<{ initialMemoryId?: string }> = ({ in
         {/* STEP 9: MUSIC */}
         {currentStep === 9 && (
           <div className="space-y-4 max-w-2xl">
-            <h2 className="text-xl font-bold text-white mb-4">9. Background Music</h2>
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-xl font-bold text-white">9. Background Music</h2>
+              <button
+                onClick={() => navigateTo('/admin/music')}
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-neutral-900 border border-neutral-800 text-xs font-semibold text-neutral-300 hover:border-rose-500 hover:text-white transition-colors"
+              >
+                <Upload className="w-3.5 h-3.5" /> Upload Music
+              </button>
+            </div>
+            {music.length === 0 && (
+              <p className="text-xs text-neutral-500">
+                No tracks in the library yet — use "Upload Music" to add your first background track.
+              </p>
+            )}
             <div className="space-y-3">
               {music.map(m => (
                 <div

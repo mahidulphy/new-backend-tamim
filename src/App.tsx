@@ -20,6 +20,7 @@ const ActivityLogsView = lazy(() => import('./components/admin/ActivityLogsView'
 const ProfileView = lazy(() => import('./components/admin/ProfileView').then(m => ({ default: m.ProfileView })));
 const AdminInboxView = lazy(() => import('./components/admin/AdminInboxView').then(m => ({ default: m.AdminInboxView })));
 const NewsletterManagementView = lazy(() => import('./components/admin/NewsletterManagementView').then(m => ({ default: m.NewsletterManagementView })));
+const MusicLibraryView = lazy(() => import('./components/admin/MusicLibraryView').then(m => ({ default: m.MusicLibraryView })));
 
 // TEMP (dev only): skip the admin login screen and land directly on the dashboard.
 // To re-enable login for production, remove this flag and the two SKIP_ADMIN_LOGIN
@@ -75,6 +76,9 @@ const RouterContent: React.FC = () => {
     } else if (currentRoute === '/admin/templates') {
       activeKey = 'templates';
       content = <TemplateManagementView />;
+    } else if (currentRoute === '/admin/music') {
+      activeKey = 'music';
+      content = <MusicLibraryView />;
     } else if (currentRoute === '/admin/orders') {
       activeKey = 'orders';
       content = <OrdersView />;

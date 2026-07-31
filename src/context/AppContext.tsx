@@ -40,6 +40,10 @@ interface AppContextType {
   memories: Memory[];
   templates: Template[];
   music: BackgroundMusic[];
+  uploadMusic: (file: File, data: { title: string; artist: string; category: string }) => Promise<BackgroundMusic | null>;
+  addMusic: (data: Partial<BackgroundMusic>) => Promise<BackgroundMusic | null>;
+  updateMusic: (id: string, data: Partial<BackgroundMusic>) => Promise<void>;
+  deleteMusic: (id: string) => Promise<void>;
   orders: Order[];
   qrs: QRCodeData[];
   media: MediaItem[];
@@ -371,6 +375,53 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     }
   };
 
+  const uploadMusic = async (file: File, data: { title: string; artist: string; category: string }): Promise<BackgroundMusic | null> => {
+    try {
+      const music = await api.music.upload(file, data);
+      setMusic(prev => [music, ...prev]);
+      logActivity('MUSIC_UPLOADED', music.title, `Uploaded background music by ${music.artist}.`);
+      addToast('Music Uploaded', `"${music.title}" added to the music library.`, 'success');
+      return music;
+    } catch (e: any) {
+      addToast('Upload Failed', e.message || 'Could not upload music.', 'error');
+      return null;
+    }
+  };
+
+  const addMusic = async (data: Partial<BackgroundMusic>): Promise<BackgroundMusic | null> => {
+    try {
+      const music = await api.music.create(data);
+      setMusic(prev => [music, ...prev]);
+      addToast('Music Added', `"${music.title}" saved to the library.`, 'success');
+      return music;
+    } catch (e: any) {
+      addToast('Error', e.message || 'Failed to add music.', 'error');
+      return null;
+    }
+  };
+
+  const updateMusic = async (id: string, data: Partial<BackgroundMusic>) => {
+    try {
+      const updated = await api.music.update(id, data);
+      setMusic(prev => prev.map(m => m.id === id ? updated : m));
+      addToast('Music Updated', 'Track details saved.', 'success');
+    } catch (e: any) {
+      addToast('Error', e.message || 'Failed to update music.', 'error');
+    }
+  };
+
+  const deleteMusic = async (id: string) => {
+    const target = music.find(m => m.id === id);
+    try {
+      await api.music.remove(id);
+      setMusic(prev => prev.filter(m => m.id !== id));
+      logActivity('MUSIC_DELETED', target?.title || id, `Removed background music track.`);
+      addToast('Music Deleted', `"${target?.title || id}" removed from the library.`, 'info');
+    } catch (e: any) {
+      addToast('Error', e.message || 'Failed to delete music.', 'error');
+    }
+  };
+
   const duplicateTemplate = async (id: string) => {
     try {
       const dup = await api.templates.duplicate(id);
@@ -544,6 +595,10 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       memories,
       templates,
       music,
+      uploadMusic,
+      addMusic,
+      updateMusic,
+      deleteMusic,
       orders,
       qrs,
       media,

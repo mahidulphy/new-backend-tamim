@@ -7,6 +7,7 @@ import session from 'express-session';
 import rateLimit from 'express-rate-limit';
 import pgStore from 'connect-pg-simple';
 import path from 'path';
+import multer from 'multer';
 import { Pool } from 'pg';
 import { memoriesRouter } from './routes/memories';
 import { templatesRouter } from './routes/templates';
@@ -198,7 +199,7 @@ if (isProduction) {
 
 app.use((err: any, _req: express.Request, res: express.Response, _next: express.NextFunction) => {
   console.error('Unhandled error:', err);
-  const status = err.status || err.statusCode || 500;
-  const message = err.expose ? err.message : 'Internal server error';
+  const status = err.status || err.statusCode || (err instanceof multer.MulterError ? 400 : 500);
+  const message = err.expose || err instanceof multer.MulterError ? err.message : 'Internal server error';
   res.status(status).json({ error: message });
 });

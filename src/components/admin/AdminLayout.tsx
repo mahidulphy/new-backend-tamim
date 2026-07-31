@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { 
   LayoutDashboard, HeartHandshake, PlusCircle, Palette, Package, 
   QrCode, FolderOpen, BarChart3, Settings, ScrollText, User, 
-  Mail, Users,
+  Mail, Users, Music2,
   LogOut, Menu, X, Search, Bell, Sun, Moon, Gift, Sparkles, ChevronRight 
 } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
@@ -31,6 +31,7 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({ children, activeKey })
     { key: 'memories', label: 'Memories', icon: HeartHandshake, route: '/admin/memories' },
     { key: 'create-memory', label: 'Create Memory', icon: PlusCircle, route: '/admin/memories/create' },
     { key: 'templates', label: 'Templates', icon: Palette, route: '/admin/templates' },
+    { key: 'music', label: 'Music Library', icon: Music2, route: '/admin/music' },
     { key: 'orders', label: 'Orders', icon: Package, route: '/admin/orders' },
     { key: 'qr-codes', label: 'QR Codes', icon: QrCode, route: '/admin/qr' },
     { key: 'media', label: 'Media Library', icon: FolderOpen, route: '/admin/media' },

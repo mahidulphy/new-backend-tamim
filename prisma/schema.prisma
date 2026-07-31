@@ -76,6 +76,8 @@ enum ActionType {
   SETTINGS_CHANGED
   ADMIN_LOGIN
   ORDER_UPDATED
+  MUSIC_UPLOADED
+  MUSIC_DELETED
 }
 
 model User {
@@ -120,6 +122,8 @@ model BackgroundMusic {
   thumbnail String?
   category  String
   duration  String
+  publicId  String?
+  createdAt DateTime @default(now())
 
   memories  Memory[]
 }

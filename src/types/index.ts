@@ -90,6 +90,8 @@ export interface BackgroundMusic {
   thumbnail?: string;
   category: string;
   duration: string;
+  publicId?: string;
+  createdAt?: string;
 }
 
 export interface Template {
@@ -233,7 +235,7 @@ export interface ActivityLog {
   id: string;
   adminId: string;
   adminName: string;
-  action: 'MEMORY_CREATED' | 'MEMORY_UPDATED' | 'MEMORY_DELETED' | 'MEMORY_ARCHIVED' | 'QR_GENERATED' | 'TEMPLATE_UPDATED' | 'SETTINGS_CHANGED' | 'ADMIN_LOGIN' | 'ORDER_UPDATED';
+  action: 'MEMORY_CREATED' | 'MEMORY_UPDATED' | 'MEMORY_DELETED' | 'MEMORY_ARCHIVED' | 'QR_GENERATED' | 'TEMPLATE_UPDATED' | 'SETTINGS_CHANGED' | 'ADMIN_LOGIN' | 'ORDER_UPDATED' | 'MUSIC_UPLOADED' | 'MUSIC_DELETED';
   target: string;
   description: string;
   ipAddress: string;

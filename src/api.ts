@@ -1,4 +1,4 @@
-import type { Memory, Template, QRCodeData, Order, MediaItem, SiteSettings, ActivityLog, User } from './types';
+import type { Memory, Template, QRCodeData, Order, MediaItem, SiteSettings, ActivityLog, User, BackgroundMusic } from './types';
 
 const API_BASE = '/api';
 
@@ -163,5 +163,29 @@ export const api = {
   },
   music: {
     list: () => request<{ id: string; title: string; artist: string; musicUrl: string; thumbnail?: string; category: string; duration: string }[]>('/music'),
+    upload: (file: File, meta: { title: string; artist: string; category: string }) => {
+      const form = new FormData();
+      form.append('file', file);
+      form.append('title', meta.title);
+      form.append('artist', meta.artist);
+      form.append('category', meta.category);
+      return fetch('/api/music/upload', {
+        method: 'POST',
+        credentials: 'include',
+        body: form,
+      }).then(async res => {
+        if (!res.ok) {
+          const err = await res.json().catch(() => ({ error: res.statusText }));
+          throw new Error(err.error || 'Music upload failed');
+        }
+        return res.json() as Promise<BackgroundMusic>;
+      });
+    },
+    create: (data: Partial<BackgroundMusic>) =>
+      request<BackgroundMusic>('/music', { method: 'POST', body: JSON.stringify(data) }),
+    update: (id: string, data: Partial<BackgroundMusic>) =>
+      request<BackgroundMusic>(`/music/${id}`, { method: 'PUT', body: JSON.stringify(data) }),
+    remove: (id: string) =>
+      request<{ success: boolean }>(`/music/${id}`, { method: 'DELETE' }),
   },
 };
