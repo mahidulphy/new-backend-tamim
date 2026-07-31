@@ -147,6 +147,8 @@ export interface Memory {
   musicId?: string;
   status: MemoryStatus;
   visibility: 'PUBLIC' | 'PRIVATE' | 'PASSWORD_PROTECTED';
+  accessPassword?: string;
+  requiresPassword?: boolean;
   viewCount: number;
   publishedAt?: string;
   createdAt: string;

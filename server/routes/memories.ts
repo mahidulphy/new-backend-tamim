@@ -1,4 +1,4 @@
-import { randomUUID } from 'crypto';
+import { randomUUID, timingSafeEqual } from 'crypto';
 import { Router, Request, Response } from 'express';
 import { z } from 'zod';
 import { prisma } from '../db';
@@ -91,6 +91,7 @@ const createMemorySchema = z.object({
   musicId: nullsafeStr(),
   status: nullsafeEnum(['DRAFT', 'PUBLISHED', 'ARCHIVED'] as const, 'DRAFT'),
   visibility: nullsafeEnum(['PUBLIC', 'PRIVATE', 'PASSWORD_PROTECTED'] as const, 'PUBLIC'),
+  accessPassword: nullsafeStr(),
   letter: letterSchema.nullable().transform(v => v === null ? undefined : v).optional(),
   photos: nullsafeArr(photoSchema).default([]),
   videos: nullsafeArr(videoSchema).default([]),
@@ -120,6 +121,7 @@ const updateMemorySchema = z.object({
   musicId: nullsafeStr(),
   status: z.enum(['DRAFT', 'PUBLISHED', 'ARCHIVED']).nullable().transform(v => v === null ? undefined : v).optional(),
   visibility: z.enum(['PUBLIC', 'PRIVATE', 'PASSWORD_PROTECTED']).nullable().transform(v => v === null ? undefined : v).optional(),
+  accessPassword: nullsafeStr(),
   letter: updateLetterSchema.nullable().transform(v => v === null ? undefined : v).optional(),
   photos: nullsafeArr(photoSchema),
   videos: nullsafeArr(videoSchema),
@@ -144,7 +146,7 @@ const memoryListSelect = {
   id: true, slug: true, title: true, subtitle: true, recipientName: true,
   senderName: true, relationship: true, coverImage: true, coverVideo: true,
   templateId: true, musicId: true, status: true, visibility: true,
-  viewCount: true, publishedAt: true, createdAt: true, updatedAt: true,
+  accessPassword: true, viewCount: true, publishedAt: true, createdAt: true, updatedAt: true,
 } as const;
 
 const memoryInclude = {
@@ -218,16 +220,64 @@ memoriesRouter.get('/slug/:slug', async (req: Request, res: Response) => {
   try {
     const slug = slugParam.parse(req.params.slug);
     const memory = await prisma.memory.findFirst({
-      where: { slug, status: 'PUBLISHED', visibility: 'PUBLIC' },
+      where: { slug, status: 'PUBLISHED', visibility: { in: ['PUBLIC', 'PASSWORD_PROTECTED'] } },
       include: memoryInclude,
     });
     if (!memory) return res.status(404).json({ error: 'Memory not found' });
-    res.json(memory);
+
+    if (memory.visibility === 'PASSWORD_PROTECTED' && memory.accessPassword) {
+      const { accessPassword, letter, photos, videos, voiceNotes, timeline, quotes, wishes, ...publicInfo } = memory;
+      return res.json({
+        ...publicInfo,
+        requiresPassword: true,
+        letter: undefined,
+        photos: [],
+        videos: [],
+        voiceNotes: [],
+        timeline: [],
+        quotes: [],
+        wishes: [],
+      });
+    }
+
+    const { accessPassword, ...safe } = memory;
+    res.json(safe);
   } catch (error) {
     if (error instanceof z.ZodError) {
       return res.status(400).json({ error: 'Invalid slug' });
     }
     res.status(500).json({ error: 'Failed to fetch memory' });
+  }
+});
+
+memoriesRouter.post('/slug/:slug/verify', async (req: Request, res: Response) => {
+  try {
+    const slug = slugParam.parse(req.params.slug);
+    const { password } = z.object({ password: z.string().min(1).max(200) }).parse(req.body);
+
+    const memory = await prisma.memory.findFirst({
+      where: { slug, status: 'PUBLISHED', visibility: 'PASSWORD_PROTECTED' },
+      include: memoryInclude,
+    });
+    if (!memory || !memory.accessPassword) {
+      return res.status(404).json({ error: 'Memory not found' });
+    }
+
+    const provided = Buffer.from(password);
+    const stored = Buffer.from(memory.accessPassword);
+    const ok = provided.length === stored.length && timingSafeEqual(provided, stored);
+    if (!ok) {
+      return res.status(401).json({ error: 'Incorrect password' });
+    }
+
+    const { accessPassword, ...safe } = memory;
+    res.json(safe);
+  } catch (error) {
+    if (error instanceof z.ZodError) {
+      return res.status(400).json({ error: 'Validation failed' });
+    }
+    console.error('Verify memory password error:', error);
+    res.status(500).json({ error: 'Failed to verify password' });
   }
 });
 
@@ -252,6 +302,7 @@ memoriesRouter.post('/', requireAuth, async (req: Request, res: Response) => {
           status: parsed.status || 'DRAFT',
           publishedAt: parsed.status === 'PUBLISHED' ? new Date() : null,
           visibility: parsed.visibility || 'PUBLIC',
+          accessPassword: parsed.visibility === 'PASSWORD_PROTECTED' ? (parsed.accessPassword || null) : null,
           letter: parsed.letter ? {
             create: {
               title: parsed.letter.title || 'My Dearest,',
@@ -341,6 +392,7 @@ memoriesRouter.put('/:id', requireAuth, async (req: Request, res: Response) => {
           ...(parsed.status !== undefined && { status: parsed.status }),
           ...(parsed.status !== undefined && { publishedAt: parsed.status === 'PUBLISHED' ? new Date() : null }),
           ...(parsed.visibility !== undefined && { visibility: parsed.visibility }),
+          ...(parsed.accessPassword !== undefined && { accessPassword: parsed.visibility === 'PASSWORD_PROTECTED' ? (parsed.accessPassword || null) : null }),
           letter: parsed.letter !== undefined ? {
             upsert: {
               create: {
@@ -482,6 +534,7 @@ memoriesRouter.put('/:id/duplicate', requireAuth, async (req: Request, res: Resp
           musicId: original.musicId || undefined,
           status: 'DRAFT',
           visibility: original.visibility,
+          accessPassword: original.visibility === 'PASSWORD_PROTECTED' ? original.accessPassword : null,
           letter: original.letter ? {
             create: {
               title: original.letter.title,

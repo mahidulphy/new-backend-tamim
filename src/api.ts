@@ -53,6 +53,8 @@ export const api = {
     list: () => requestList<Memory>('/memories'),
     get: (id: string) => request<Memory>(`/memories/${id}`),
     getBySlug: (slug: string) => request<Memory>(`/memories/slug/${slug}`),
+    verifyAccess: (slug: string, password: string) =>
+      request<Memory>(`/memories/slug/${slug}/verify`, { method: 'POST', body: JSON.stringify({ password }) }),
     create: (data: Partial<Memory>) => request<Memory>('/memories', { method: 'POST', body: JSON.stringify(data) }),
     update: (id: string, data: Partial<Memory>) => request<Memory>(`/memories/${id}`, { method: 'PUT', body: JSON.stringify(data) }),
     updateStatus: (id: string, status: string) =>

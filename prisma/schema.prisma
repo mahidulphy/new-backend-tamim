@@ -138,6 +138,7 @@ model Memory {
   musicId       String?
   status        MemoryStatus  @default(DRAFT)
   visibility    Visibility    @default(PUBLIC)
+  accessPassword String?
   viewCount     Int           @default(0)
   publishedAt   DateTime?
   createdAt     DateTime      @default(now())

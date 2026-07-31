@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Sparkles, CheckCircle2, ArrowRight, ArrowLeft, Mic, FileText, Music, QrCode, Save, Eye, Plus, Trash2, Image, Film, Upload, Loader2, GripVertical, ArrowUp, ArrowDown, X } from 'lucide-react';
+import { Sparkles, CheckCircle2, ArrowRight, ArrowLeft, Mic, FileText, Music, QrCode, Eye, Plus, Trash2, Image, Film, Upload, Loader2, GripVertical, ArrowUp, ArrowDown, X, Globe, Lock, KeyRound } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
 import { Memory, Photo, Video, VoiceNote, TimelineEvent, MediaItem } from '../../types';
 import { TemplateRenderer } from '../public-memory/TemplateRenderer';
@@ -26,6 +26,7 @@ export const MemoryBuilderWizard: React.FC<{ initialMemoryId?: string }> = ({ in
       musicId: undefined,
       status: 'DRAFT',
       visibility: 'PUBLIC',
+      accessPassword: '',
       letter: {
         id: `ltr_${Date.now()}`,
         memoryId: '',
@@ -354,6 +355,10 @@ export const MemoryBuilderWizard: React.FC<{ initialMemoryId?: string }> = ({ in
       addToast('Validation Error', 'Please fill in Recipient Name, Sender Name, Memory Title, and select a Template before saving.', 'warning');
       return;
     }
+    if (formData.visibility === 'PASSWORD_PROTECTED' && (!formData.accessPassword || formData.accessPassword.length < 4)) {
+      addToast('Validation Error', 'Password-protected memories need a password of at least 4 characters.', 'warning');
+      return;
+    }
     const saved = await saveMemory({ ...formData, status: 'DRAFT' });
     setCreatedMemory(saved);
     if (!initialMemoryId) {
@@ -364,6 +369,10 @@ export const MemoryBuilderWizard: React.FC<{ initialMemoryId?: string }> = ({ in
   const handlePublish = async () => {
     if (!formData.recipientName || !formData.senderName || !formData.title || !formData.templateId) {
       addToast('Validation Error', 'Please fill in Recipient Name, Sender Name, Memory Title, and select a Template before publishing.', 'warning');
+      return;
+    }
+    if (formData.visibility === 'PASSWORD_PROTECTED' && (!formData.accessPassword || formData.accessPassword.length < 4)) {
+      addToast('Validation Error', 'Password-protected memories need a password of at least 4 characters.', 'warning');
       return;
     }
     const published = await saveMemory({ ...formData, status: 'PUBLISHED' });
@@ -414,26 +423,9 @@ export const MemoryBuilderWizard: React.FC<{ initialMemoryId?: string }> = ({ in
     <div className="space-y-8 max-w-5xl mx-auto">
       {/* Header & Steps Progress */}
       <div className="bg-neutral-900 border border-neutral-800 rounded-3xl p-6 shadow-xl">
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
-          <div>
-            <h1 className="text-2xl font-extrabold text-white tracking-tight">Memory Creation Wizard</h1>
-            <p className="text-xs text-neutral-400">Step {currentStep} of 11: {steps[currentStep - 1]}</p>
-          </div>
-
-          <div className="flex items-center gap-2">
-            <button
-              onClick={handleSaveDraft}
-              className="px-4 py-2 rounded-xl bg-neutral-800 hover:bg-neutral-700 text-neutral-200 text-xs font-semibold flex items-center gap-1.5 transition-colors"
-            >
-              <Save className="w-4 h-4" /> Save Draft
-            </button>
-            <button
-              onClick={handlePublish}
-              className="px-5 py-2 rounded-xl bg-gradient-to-r from-rose-600 to-rose-500 hover:from-rose-500 text-white text-xs font-semibold flex items-center gap-1.5 shadow-lg shadow-rose-950/40 transition-all cursor-pointer"
-            >
-              <Sparkles className="w-4 h-4" /> Publish & Generate QR
-            </button>
-          </div>
+        <div className="mb-6">
+          <h1 className="text-2xl font-extrabold text-white tracking-tight">Memory Creation Wizard</h1>
+          <p className="text-xs text-neutral-400">Step {currentStep} of 11: {steps[currentStep - 1]}</p>
         </div>
 
         {/* Progress Bar */}
@@ -561,6 +553,63 @@ export const MemoryBuilderWizard: React.FC<{ initialMemoryId?: string }> = ({ in
                 placeholder="A journey through our 5 unforgettable years of love..."
                 className="w-full px-4 py-3 rounded-xl bg-neutral-950 border border-neutral-800 text-white text-sm focus:outline-none focus:border-rose-500"
               />
+            </div>
+
+            <div className="pt-4 border-t border-neutral-800 mt-6 space-y-4">
+              <div>
+                <label className="block text-xs font-semibold text-neutral-300 mb-3">Who Can View This Memory?</label>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <div
+                    onClick={() => setFormData({ ...formData, visibility: 'PUBLIC' })}
+                    className={`p-4 rounded-2xl border cursor-pointer transition-all ${
+                      formData.visibility === 'PUBLIC'
+                        ? 'border-rose-500 bg-rose-500/5 ring-1 ring-rose-500'
+                        : 'border-neutral-800 bg-neutral-950 hover:border-neutral-700'
+                    }`}
+                  >
+                    <div className="flex items-center gap-2 mb-1.5">
+                      <Globe className={`w-4 h-4 ${formData.visibility === 'PUBLIC' ? 'text-rose-400' : 'text-neutral-500'}`} />
+                      <span className="text-sm font-bold text-white">Public</span>
+                      {formData.visibility === 'PUBLIC' && <CheckCircle2 className="w-4 h-4 text-rose-400 ml-auto" />}
+                    </div>
+                    <p className="text-[11px] text-neutral-400">Anyone with the link or QR code can view.</p>
+                  </div>
+
+                  <div
+                    onClick={() => setFormData({ ...formData, visibility: 'PASSWORD_PROTECTED' })}
+                    className={`p-4 rounded-2xl border cursor-pointer transition-all ${
+                      formData.visibility === 'PASSWORD_PROTECTED'
+                        ? 'border-rose-500 bg-rose-500/5 ring-1 ring-rose-500'
+                        : 'border-neutral-800 bg-neutral-950 hover:border-neutral-700'
+                    }`}
+                  >
+                    <div className="flex items-center gap-2 mb-1.5">
+                      <Lock className={`w-4 h-4 ${formData.visibility === 'PASSWORD_PROTECTED' ? 'text-rose-400' : 'text-neutral-500'}`} />
+                      <span className="text-sm font-bold text-white">Password Protected</span>
+                      {formData.visibility === 'PASSWORD_PROTECTED' && <CheckCircle2 className="w-4 h-4 text-rose-400 ml-auto" />}
+                    </div>
+                    <p className="text-[11px] text-neutral-400">Viewers must enter a password after scanning the QR code.</p>
+                  </div>
+                </div>
+              </div>
+
+              {formData.visibility === 'PASSWORD_PROTECTED' && (
+                <div className="p-4 rounded-2xl bg-neutral-950 border border-amber-500/25 space-y-2">
+                  <label className="block text-xs font-semibold text-amber-300 flex items-center gap-1.5">
+                    <KeyRound className="w-3.5 h-3.5" /> Memory Access Password *
+                  </label>
+                  <input
+                    type="text"
+                    value={formData.accessPassword || ''}
+                    onChange={e => setFormData({ ...formData, accessPassword: e.target.value })}
+                    placeholder="e.g. 1234 or Sophia123"
+                    className="w-full px-4 py-3 rounded-xl bg-neutral-950 border border-neutral-800 text-white text-sm focus:outline-none focus:border-amber-500"
+                  />
+                  <p className="text-[11px] text-neutral-500">
+                    Share this password with your loved one — they will need it to open the gift after scanning the QR code.
+                  </p>
+                </div>
+              )}
             </div>
           </div>
         )}

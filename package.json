@@ -73,5 +73,14 @@
     "typescript": "~5.8.2",
     "vite": "^6.2.3",
     "vite-plugin-compression": "^0.5.1"
+  },
+  "allowScripts": {
+    "@google/genai@2.14.0": true,
+    "@prisma/engines@7.9.1": true,
+    "bcrypt@6.0.0": true,
+    "esbuild@0.25.12": true,
+    "esbuild@0.28.1": true,
+    "prisma@7.9.1": true,
+    "protobufjs@7.6.5": true
   }
 }

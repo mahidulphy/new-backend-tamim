@@ -2,6 +2,7 @@ import { Router, Request, Response } from 'express';
 import bcrypt from 'bcrypt';
 import { z } from 'zod';
 import { prisma } from '../db';
+import { getDevBypassUser, isDevAuthBypassEnabled } from '../middleware/devBypass';
 
 export const authRouter = Router();
 
@@ -72,6 +73,24 @@ authRouter.post('/logout', (req: Request, res: Response) => {
 
 authRouter.get('/session', async (req: Request, res: Response) => {
   try {
+    if (isDevAuthBypassEnabled() && !req.session?.userId) {
+      const devUser = await getDevBypassUser();
+      if (devUser) {
+        req.session.userId = devUser.id;
+        req.session.userRole = devUser.role;
+        req.session.userName = devUser.name;
+        return res.json({
+          id: devUser.id,
+          name: devUser.name,
+          email: devUser.email,
+          avatar: devUser.avatar,
+          role: devUser.role,
+          status: devUser.status,
+          lastLogin: devUser.lastLogin,
+        });
+      }
+    }
+
     if (!req.session?.userId) {
       return res.json(null);
     }
