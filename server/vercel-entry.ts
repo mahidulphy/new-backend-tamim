@@ -1,4 +1,4 @@
 import './env';
-import { app } from '../server/app';
+import { app } from './app';
 
 export default app;
