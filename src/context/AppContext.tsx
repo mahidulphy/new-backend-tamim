@@ -32,6 +32,7 @@ const DEFAULT_SETTINGS: SiteSettings = {
 interface AppContextType {
   user: User | null;
   isAdminAuthenticated: boolean;
+  checkSession: () => Promise<boolean>;
   loginAdmin: (email: string, pass: string) => Promise<boolean>;
   logoutAdmin: () => Promise<void>;
   updateUser: (data: Partial<User>) => void;
@@ -150,16 +151,27 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     }
   }, []);
 
-  useEffect(() => {
-    api.auth.getSession().then(sessionUser => {
+  const checkSession = useCallback(async (): Promise<boolean> => {
+    try {
+      const sessionUser = await api.auth.getSession();
       if (sessionUser) {
         setUser(sessionUser);
         setIsAdminAuthenticated(true);
+        return true;
       }
-    }).catch(() => {}).finally(() => {
+      setUser(null);
+      setIsAdminAuthenticated(false);
+      return false;
+    } catch {
+      return false;
+    }
+  }, []);
+
+  useEffect(() => {
+    checkSession().finally(() => {
       setSessionChecked(true);
     });
-  }, []);
+  }, [checkSession]);
 
   useEffect(() => {
     if (isAdminAuthenticated) {
@@ -525,6 +537,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     <AppContext.Provider value={{
       user,
       isAdminAuthenticated,
+      checkSession,
       loginAdmin,
       logoutAdmin,
       updateUser,

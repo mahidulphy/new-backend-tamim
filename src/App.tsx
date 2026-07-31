@@ -1,4 +1,4 @@
-import React, { Suspense, lazy } from 'react';
+import React, { Suspense, lazy, useEffect } from 'react';
 import { AppProvider, useApp } from './context/AppContext';
 import { ToastContainer } from './components/ui/ToastContainer';
 import { ErrorBoundary } from './components/shared/ErrorBoundary';
@@ -21,8 +21,19 @@ const ProfileView = lazy(() => import('./components/admin/ProfileView').then(m =
 const AdminInboxView = lazy(() => import('./components/admin/AdminInboxView').then(m => ({ default: m.AdminInboxView })));
 const NewsletterManagementView = lazy(() => import('./components/admin/NewsletterManagementView').then(m => ({ default: m.NewsletterManagementView })));
 
+// TEMP (dev only): skip the admin login screen and land directly on the dashboard.
+// To re-enable login for production, remove this flag and the two SKIP_ADMIN_LOGIN
+// checks below. The login page, auth routes, and dev bypass are untouched.
+const SKIP_ADMIN_LOGIN = import.meta.env.DEV || (import.meta.env as Record<string, string | undefined>).VITE_SKIP_ADMIN_LOGIN === 'true';
+
 const RouterContent: React.FC = () => {
-  const { currentRoute, isAdminAuthenticated } = useApp();
+  const { currentRoute, isAdminAuthenticated, checkSession } = useApp();
+
+  useEffect(() => {
+    if (SKIP_ADMIN_LOGIN && !isAdminAuthenticated && currentRoute.startsWith('/admin')) {
+      checkSession();
+    }
+  }, [SKIP_ADMIN_LOGIN, isAdminAuthenticated, currentRoute, checkSession]);
 
   // Public Memory View Route (/memory/:slug)
   if (currentRoute.startsWith('/memory/')) {
@@ -32,7 +43,7 @@ const RouterContent: React.FC = () => {
 
   // Admin Login Route
   if (currentRoute === '/admin/login') {
-    if (isAdminAuthenticated) {
+    if (isAdminAuthenticated || SKIP_ADMIN_LOGIN) {
       return (
         <AdminLayout activeKey="dashboard">
           <DashboardView />
@@ -44,7 +55,7 @@ const RouterContent: React.FC = () => {
 
   // Protected Admin Routes
   if (currentRoute.startsWith('/admin')) {
-    if (!isAdminAuthenticated) {
+    if (!isAdminAuthenticated && !SKIP_ADMIN_LOGIN) {
       return <AdminLoginPage />;
     }
 
