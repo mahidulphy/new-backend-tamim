@@ -12,10 +12,6 @@
     {
       "source": "/admin(.*)",
       "destination": "/index.html"
-    },
-    {
-      "source": "/(.*)",
-      "destination": "/api"
     }
   ],
   "headers": [
