@@ -4,7 +4,8 @@
   "buildCommand": "npm run build",
   "devCommand": "npm run dev:client",
   "installCommand": "npm install",
-  "framework": null,
+  "framework": "node",
+  "outputDirectory": "dist",
   "rewrites": [
     {
       "source": "/(.*)",
