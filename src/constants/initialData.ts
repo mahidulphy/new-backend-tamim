@@ -111,28 +111,28 @@ export const INITIAL_MUSIC: BackgroundMusic[] = [
     id: 'mus_01',
     title: 'A Thousand Years (Piano Instrumental)',
     artist: 'Ethereal Harmony',
-    musicUrl: 'https://cdn.pixabay.com/download/audio/2022/05/27/audio_1808fbf07a.mp3?filename=sweet-piano-112182.mp3',
+    musicUrl: 'https://res.cloudinary.com/vrniaume/video/upload/v1785510550/memorygift/music/a-thousand-years-piano-instrumental-.mp3',
     thumbnail: 'https://images.unsplash.com/photo-1520523839897-bd0b52f945a0?auto=format&fit=crop&q=80&w=300',
     category: 'Romantic',
-    duration: '3:45'
+    duration: '2:27'
   },
   {
     id: 'mus_02',
     title: 'Golden Sunset Acoustic',
     artist: 'Serenity Ensemble',
-    musicUrl: 'https://cdn.pixabay.com/download/audio/2022/03/15/audio_c8c8a70198.mp3?filename=acoustic-guitars-ambient-10788.mp3',
+    musicUrl: 'https://res.cloudinary.com/vrniaume/video/upload/v1785511760/memorygift/music/golden-sunset-acoustic.mp3',
     thumbnail: 'https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?auto=format&fit=crop&q=80&w=300',
     category: 'Acoustic',
-    duration: '2:30'
+    duration: '2:10'
   },
   {
     id: 'mus_03',
     title: 'Celestial Whispers String Quartet',
     artist: 'Luna Strings',
-    musicUrl: 'https://cdn.pixabay.com/download/audio/2022/01/18/audio_d0a13f69d2.mp3?filename=cinematic-documentary-115669.mp3',
+    musicUrl: 'https://res.cloudinary.com/vrniaume/video/upload/v1785510555/memorygift/music/celestial-whispers-string-quartet.mp3',
     thumbnail: 'https://images.unsplash.com/photo-1465847899084-d164df4dedc6?auto=format&fit=crop&q=80&w=300',
     category: 'Classical',
-    duration: '4:12'
+    duration: '1:51'
   }
 ];
 
@@ -207,8 +207,8 @@ export const INITIAL_MEMORIES: Memory[] = [
         id: 'vn_01',
         memoryId: 'mem_rose_garden_01',
         title: 'A Message From My Heart',
-        audioUrl: 'https://cdn.pixabay.com/download/audio/2022/03/10/audio_c8c8a70198.mp3',
-        duration: '01:15',
+        audioUrl: 'https://res.cloudinary.com/vrniaume/video/upload/v1785510560/memorygift/voice_notes/tmkc-mahavirwa-wala-mp3-old-raw-.mp3',
+        duration: '00:06',
         displayOrder: 1
       }
     ],
@@ -322,8 +322,8 @@ export const INITIAL_MEMORIES: Memory[] = [
         id: 'vn_02',
         memoryId: 'mem_luxury_gold_02',
         title: 'Toast From Ethan',
-        audioUrl: 'https://cdn.pixabay.com/download/audio/2022/05/27/audio_1808fbf07a.mp3',
-        duration: '02:04',
+        audioUrl: 'https://res.cloudinary.com/vrniaume/video/upload/v1785510560/memorygift/voice_notes/tmkc-mahavirwa-wala-mp3-old-raw-.mp3',
+        duration: '00:06',
         displayOrder: 1
       }
     ],
@@ -509,7 +509,7 @@ export const INITIAL_MEDIA: MediaItem[] = [
   {
     id: 'med_03',
     type: 'VOICE_NOTE',
-    url: 'https://cdn.pixabay.com/download/audio/2022/03/10/audio_c8c8a70198.mp3',
+    url: 'https://res.cloudinary.com/vrniaume/video/upload/v1785510560/memorygift/voice_notes/tmkc-mahavirwa-wala-mp3-old-raw-.mp3',
     name: 'marcus_voice_proposal.mp3',
     size: '1.2 MB',
     mimeType: 'audio/mpeg',

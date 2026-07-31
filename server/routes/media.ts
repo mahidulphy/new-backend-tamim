@@ -2,7 +2,7 @@ import { Router, Request, Response } from 'express';
 import { z } from 'zod';
 import { prisma } from '../db';
 import { requireAuth } from '../middleware/auth';
-import cloudinary from '../cloudinary';
+import { destroyAsset } from '../cloudinary';
 
 export const mediaRouter = Router();
 
@@ -45,8 +45,7 @@ mediaRouter.delete('/:id', requireAuth, async (req: Request, res: Response) => {
     const id = z.string().min(1).parse(req.params.id);
     const existing = await prisma.mediaItem.findUnique({ where: { id } });
     if (existing?.publicId) {
-      const resourceType = existing.type === 'VIDEO' ? 'video' : existing.type === 'VOICE_NOTE' ? 'raw' : 'image';
-      await cloudinary.uploader.destroy(existing.publicId, { resource_type: resourceType }).catch(() => {});
+      await destroyAsset(existing.publicId, existing.type);
     }
     await prisma.mediaItem.delete({ where: { id } });
     res.json({ success: true });

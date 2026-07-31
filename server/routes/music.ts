@@ -3,7 +3,7 @@ import multer from 'multer';
 import { z } from 'zod';
 import { prisma } from '../db';
 import { requireAuth } from '../middleware/auth';
-import cloudinary from '../cloudinary';
+import cloudinary, { destroyAsset } from '../cloudinary';
 
 export const musicRouter = Router();
 
@@ -145,7 +145,7 @@ musicRouter.delete('/:id', requireAuth, async (req: Request, res: Response) => {
     }
 
     if (existing.publicId) {
-      await cloudinary.uploader.destroy(existing.publicId, { resource_type: 'video' }).catch(() => {});
+      await destroyAsset(existing.publicId, 'VOICE_NOTE');
     }
 
     await prisma.backgroundMusic.delete({ where: { id } });

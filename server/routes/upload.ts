@@ -3,7 +3,7 @@ import multer from 'multer';
 import { z } from 'zod';
 import { prisma } from '../db';
 import { requireAuth } from '../middleware/auth';
-import cloudinary from '../cloudinary';
+import cloudinary, { audioResourceType, destroyAsset } from '../cloudinary';
 
 export const uploadRouter = Router();
 
@@ -45,7 +45,7 @@ uploadRouter.post('/', requireAuth, upload.single('file'), async (req: Request, 
 
     const file = req.file;
     const type = mimeToType(file.mimetype);
-    const resourceType = type === 'VIDEO' ? 'video' : type === 'VOICE_NOTE' ? 'raw' : 'image';
+    const resourceType = type === 'VIDEO' ? 'video' : type === 'VOICE_NOTE' ? audioResourceType() : 'image';
     const folder = `memorygift/${type.toLowerCase()}s`;
 
     const result = await new Promise<any>((resolve, reject) => {
@@ -93,8 +93,7 @@ uploadRouter.post('/replace/:id', requireAuth, upload.single('file'), async (req
     if (!existing) return res.status(404).json({ error: 'Media not found' });
 
     if (existing.publicId) {
-      const resourceType = existing.type === 'VIDEO' ? 'video' : existing.type === 'VOICE_NOTE' ? 'raw' : 'image';
-      await cloudinary.uploader.destroy(existing.publicId, { resource_type: resourceType }).catch(() => {});
+      await destroyAsset(existing.publicId, existing.type);
     }
 
     if (!req.file) {
@@ -103,7 +102,7 @@ uploadRouter.post('/replace/:id', requireAuth, upload.single('file'), async (req
 
     const file = req.file;
     const type = mimeToType(file.mimetype);
-    const resourceType = type === 'VIDEO' ? 'video' : type === 'VOICE_NOTE' ? 'raw' : 'image';
+    const resourceType = type === 'VIDEO' ? 'video' : type === 'VOICE_NOTE' ? audioResourceType() : 'image';
     const folder = `memorygift/${type.toLowerCase()}s`;
 
     const result = await new Promise<any>((resolve, reject) => {

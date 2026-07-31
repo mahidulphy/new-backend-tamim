@@ -399,8 +399,8 @@ export const MemoryBuilderWizard: React.FC<{ initialMemoryId?: string }> = ({ in
       id: `vn_${Date.now()}`,
       memoryId: formData.id || '',
       title: 'New Voice Recording',
-      audioUrl: 'https://cdn.pixabay.com/download/audio/2022/03/10/audio_c8c8a70198.mp3',
-      duration: '00:30',
+      audioUrl: 'https://res.cloudinary.com/vrniaume/video/upload/v1785510560/memorygift/voice_notes/tmkc-mahavirwa-wala-mp3-old-raw-.mp3',
+      duration: '00:06',
       displayOrder: (formData.voiceNotes?.length || 0) + 1
     };
     setFormData(prev => ({ ...prev, voiceNotes: [...(prev.voiceNotes || []), newNote] }));
