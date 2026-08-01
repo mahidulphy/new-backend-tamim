@@ -49,3 +49,5 @@ Environment variables are configured in the Vercel project settings (production)
 
 Production requires admin login. A development-only bypass (`DEV_BYPASS_AUTH=true`)
 auto-authenticates as the default admin; it is ignored when `NODE_ENV=production`.
+
+Deployed automatically to Netlify: https://new-backend-tamim.netlify.app
