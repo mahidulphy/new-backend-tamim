@@ -15,7 +15,7 @@
     "db:migrate": "prisma migrate dev",
     "db:push": "prisma db push",
     "db:studio": "prisma studio",
-    "postinstall": "prisma generate",
+    "postinstall": "prisma generate && node scripts/patch-prisma-client.mjs",
     "lint": "tsc --noEmit"
   },
   "dependencies": {
