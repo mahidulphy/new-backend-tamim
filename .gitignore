@@ -9,3 +9,6 @@ coverage/
 
 /src/generated/prisma
 .vercel
+
+# Local Netlify folder
+.netlify
