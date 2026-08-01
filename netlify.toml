@@ -4,3 +4,22 @@
 
 [build.environment]
   NODE_VERSION = "22"
+
+[functions]
+  directory = "netlify/functions"
+  node_bundler = "esbuild"
+
+[[redirects]]
+  from = "/api/*"
+  to = "/.netlify/functions/server"
+  status = 200
+
+[[redirects]]
+  from = "/memory/*"
+  to = "/index.html"
+  status = 200
+
+[[redirects]]
+  from = "/admin*"
+  to = "/index.html"
+  status = 200
