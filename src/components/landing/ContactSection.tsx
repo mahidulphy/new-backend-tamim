@@ -81,7 +81,7 @@ export const ContactSection: React.FC = () => {
 
     {/* Portfolio */}
     <a
-      href="https://mahidulphy.vercel.app"
+      href="https://www.mahidulphy.vercel.app"
       target="_blank"
       rel="noopener noreferrer"
       aria-label="Mahidul Portfolio"
@@ -114,7 +114,7 @@ export const ContactSection: React.FC = () => {
 
     {/* Fiverr */}
     <a
-      href="YOUR_FIVERR_PROFILE_LINK"
+      href="https://www.fiverr.com/mahidulphy"
       target="_blank"
       rel="noopener noreferrer"
       aria-label="Mahidul Fiverr"
@@ -125,7 +125,7 @@ export const ContactSection: React.FC = () => {
 
     {/* Facebook */}
     <a
-      href="YOUR_FACEBOOK_PROFILE_LINK"
+      href="https://www.facebook.com/mahidulphy"
       target="_blank"
       rel="noopener noreferrer"
       aria-label="Mahidul Facebook"
@@ -136,7 +136,7 @@ export const ContactSection: React.FC = () => {
 
     {/* Instagram */}
     <a
-      href="YOUR_INSTAGRAM_PROFILE_LINK"
+      href="https://www.instagram.com/mahidulphy"
       target="_blank"
       rel="noopener noreferrer"
       aria-label="Mahidul Instagram"
