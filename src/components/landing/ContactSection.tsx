@@ -47,15 +47,15 @@ export const ContactSection: React.FC = () => {
           <div className="space-y-4 text-sm text-neutral-300">
             <div className="flex items-center gap-3 p-4 rounded-2xl bg-neutral-900 border border-neutral-800">
               <Mail className="w-5 h-5 text-rose-400 shrink-0" />
-              <span>{settings.supportEmail}</span>
+              <span>mahidul.phy@yahoo.com</span>
             </div>
             <div className="flex items-center gap-3 p-4 rounded-2xl bg-neutral-900 border border-neutral-800">
               <Phone className="w-5 h-5 text-amber-400 shrink-0" />
-              <span>{settings.phone || '+1 (800) 555-0199'}</span>
+              <span>+880 1810-507404</span>
             </div>
             <div className="flex items-center gap-3 p-4 rounded-2xl bg-neutral-900 border border-neutral-800">
               <MapPin className="w-5 h-5 text-rose-400 shrink-0" />
-              <span>{settings.city ? `${settings.city}${settings.address ? ` • ${settings.address}` : ''}` : 'Seattle, WA • San Francisco, CA'}</span>
+              <span>Dhaka, Bangladesh</span>
             </div>
           </div>
         </div>
