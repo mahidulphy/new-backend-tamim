@@ -1,6 +1,19 @@
 import React, { useState } from 'react';
 import { Send, Mail, Phone, MapPin, CheckCircle2 } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
+import {
+  Send,
+  Mail,
+  Phone,
+  MapPin,
+  CheckCircle2,
+  Github,
+  Facebook,
+  Instagram,
+  Linkedin,
+  Globe,
+  BriefcaseBusiness,
+} from 'lucide-react';
 
 export const ContactSection: React.FC = () => {
   const { addToast, settings } = useApp();
@@ -59,7 +72,81 @@ export const ContactSection: React.FC = () => {
             </div>
           </div>
         </div>
+        <div className="pt-3">
+  <p className="text-xs font-semibold text-neutral-300 mb-3">
+    Connect With Me
+  </p>
 
+  <div className="flex flex-wrap gap-3">
+
+    {/* Portfolio */}
+    <a
+      href="https://mahidulphy.vercel.app"
+      target="_blank"
+      rel="noopener noreferrer"
+      aria-label="Mahidul Portfolio"
+      className="w-10 h-10 rounded-xl bg-neutral-900 border border-neutral-800 flex items-center justify-center text-neutral-400 hover:text-white hover:border-rose-500 hover:bg-neutral-800 transition-all"
+    >
+      <Globe className="w-4 h-4" />
+    </a>
+
+    {/* GitHub */}
+    <a
+      href="https://github.com/mahidulphy"
+      target="_blank"
+      rel="noopener noreferrer"
+      aria-label="Mahidul GitHub"
+      className="w-10 h-10 rounded-xl bg-neutral-900 border border-neutral-800 flex items-center justify-center text-neutral-400 hover:text-white hover:border-rose-500 hover:bg-neutral-800 transition-all"
+    >
+      <Github className="w-4 h-4" />
+    </a>
+
+    {/* LinkedIn */}
+    <a
+      href="https://www.linkedin.com/in/mahidulphy"
+      target="_blank"
+      rel="noopener noreferrer"
+      aria-label="Mahidul LinkedIn"
+      className="w-10 h-10 rounded-xl bg-neutral-900 border border-neutral-800 flex items-center justify-center text-neutral-400 hover:text-white hover:border-rose-500 hover:bg-neutral-800 transition-all"
+    >
+      <Linkedin className="w-4 h-4" />
+    </a>
+
+    {/* Fiverr */}
+    <a
+      href="YOUR_FIVERR_PROFILE_LINK"
+      target="_blank"
+      rel="noopener noreferrer"
+      aria-label="Mahidul Fiverr"
+      className="w-10 h-10 rounded-xl bg-neutral-900 border border-neutral-800 flex items-center justify-center text-neutral-400 hover:text-white hover:border-rose-500 hover:bg-neutral-800 transition-all"
+    >
+      <BriefcaseBusiness className="w-4 h-4" />
+    </a>
+
+    {/* Facebook */}
+    <a
+      href="YOUR_FACEBOOK_PROFILE_LINK"
+      target="_blank"
+      rel="noopener noreferrer"
+      aria-label="Mahidul Facebook"
+      className="w-10 h-10 rounded-xl bg-neutral-900 border border-neutral-800 flex items-center justify-center text-neutral-400 hover:text-white hover:border-rose-500 hover:bg-neutral-800 transition-all"
+    >
+      <Facebook className="w-4 h-4" />
+    </a>
+
+    {/* Instagram */}
+    <a
+      href="YOUR_INSTAGRAM_PROFILE_LINK"
+      target="_blank"
+      rel="noopener noreferrer"
+      aria-label="Mahidul Instagram"
+      className="w-10 h-10 rounded-xl bg-neutral-900 border border-neutral-800 flex items-center justify-center text-neutral-400 hover:text-white hover:border-rose-500 hover:bg-neutral-800 transition-all"
+    >
+      <Instagram className="w-4 h-4" />
+    </a>
+
+  </div>
+</div>
         <div className="bg-neutral-900 border border-neutral-800 p-8 rounded-3xl shadow-2xl">
           {submitted ? (
             <div className="text-center py-12">
